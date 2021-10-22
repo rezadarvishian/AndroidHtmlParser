@@ -1,17 +1,16 @@
 package da.reza.androidhtmlloadersample.Utiles
 
-import android.app.Activity
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
 import android.util.Base64
-import android.util.DisplayMetrics
 import android.util.Patterns
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.text.HtmlCompat
+import da.reza.androidhtmlloadersample.R
 import kotlinx.coroutines.*
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -25,14 +24,15 @@ class HtmlParser {
 
     private var textViewTarget:TextView? = null
 
-    private var htmlText:String? = null
+    private var htmlText:String = ""
 
     @DrawableRes
-    private var placeholder : Int? = null
+    private var placeholder : Int = R.drawable.ic_launcher_foreground
 
     private var maxImageWidth = 500F
 
-    private val context get() = textViewTarget!!.context
+    private val context
+    get() = textViewTarget!!.context
 
 
     // set CoroutineScope with activity or fragments lifecycle for control coroutines jobs
@@ -63,20 +63,19 @@ class HtmlParser {
 
         if (coroutineScope == null) throw Exception("coroutineScope must be set")
         if (textViewTarget == null) throw Exception("textViewTarget is null")
-        if (htmlText == null) throw Exception("htmlText is null")
-        if (placeholder == null) throw Exception("placeholder is necessary")
+        if (htmlText.isEmpty()) throw Exception("htmlText is Empty")
 
 
         coroutineScope!!.launch {
 
-            var text = HtmlCompat.fromHtml(htmlText!!, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            var text = HtmlCompat.fromHtml(htmlText, HtmlCompat.FROM_HTML_MODE_COMPACT)
             textViewTarget!!.text = text
 
             withContext(Dispatchers.IO) {
 
                 async {
                     text = HtmlCompat.fromHtml(
-                        htmlText!!,
+                        htmlText,
                         HtmlCompat.FROM_HTML_MODE_COMPACT,
                         HtmlImageGetter(),
                         null
@@ -98,7 +97,7 @@ class HtmlParser {
         override fun getDrawable(p0: String?): Drawable {
             var drawable = AppCompatResources.getDrawable(
                 textViewTarget!!.context,
-                placeholder!!
+                placeholder
             ) as Drawable
 
             try {
