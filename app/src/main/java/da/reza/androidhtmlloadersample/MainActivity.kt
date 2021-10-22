@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import da.reza.androidhtmlloadersample.Utiles.HtmlParser
+import da.reza.androidhtmlloadersample.Utiles.getScreenWidth
 import da.reza.androidhtmlloadersample.databinding.MainActivityBinding
 import java.io.IOException
 import java.io.InputStream
@@ -21,22 +22,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initHtmlParser()
     }
 
-    override fun onStart() {
-        super.onStart()
+
+    private fun initHtmlParser(){
+        val screenWidth = (getScreenWidth() - 50).toFloat()
+        val htmlText = loadHtmlFromResource()
         HtmlParser()
             .setCoroutineScope(lifecycleScope)
-            .maxImageWidth(getScreenWidth())
+            .maxImageWidth(screenWidth)
             .setPlaceHolder(R.drawable.ic_launcher_foreground)
-            .with(loadHtmlFromResource())
+            .with(htmlText)
             .into(binding.htmlTextView)
             .parse()
     }
-
-    //get displayWidth for set max of an image should be
-    private fun getScreenWidth() = (Resources.getSystem().displayMetrics.widthPixels - 50).toFloat()
-
 
     //load sample html text with image link from assets
     private fun loadHtmlFromResource(): String {

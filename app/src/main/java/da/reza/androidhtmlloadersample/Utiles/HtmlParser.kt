@@ -102,6 +102,7 @@ class HtmlParser {
 
             try {
 
+                //ImageGetter get bad url from img tag
                 if (p0.isNullOrBlank() || p0.length < 10) {
                     return drawable
                 }
@@ -152,9 +153,6 @@ class HtmlParser {
             }
         }
     }
-
-
-    fun String.isValidUrl() = Patterns.WEB_URL.matcher(this).matches()
 
 
 }
